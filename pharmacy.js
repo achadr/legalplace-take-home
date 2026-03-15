@@ -42,6 +42,9 @@ export class Pharmacy {
         if (drug.expiresIn <= 10) return drug.benefit + 2;
         return drug.benefit + 1;
 
+      case "Dafalgan":
+        return drug.benefit - (isExpired ? 4 : 2);
+
       default:
         return drug.benefit - (isExpired ? 2 : 1);
     }
