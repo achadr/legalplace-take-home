@@ -45,3 +45,26 @@ To make sure that you will not break anything in the existing code, we added the
 ```sh
 yarn start
 ```
+
+## What was done
+
+### 1. Tests for existing behavior
+Added comprehensive unit tests in `pharmacy.test.js` covering all drug rules and edge cases before touching any logic:
+- Normal drugs: degradation, double degradation after expiry, benefit floor at 0
+- Herbal Tea: benefit increase, double increase after expiry, cap at 50
+- Magic Pill: never changes, even at expiresIn=0
+- Fervex: all thresholds (>10, ≤10, ≤5 days), drop to 0 after expiry, cap at 50, boundary cases
+
+### 2. Refactor
+Rewrote `updateBenefitValue` in `pharmacy.js` for readability and maintainability:
+- Extracted `updateDrug` and `computeBenefit` methods
+- Replaced deeply nested `for` loop with `forEach` and a clean `switch` statement
+- Introduced `isExpired` flag to unify benefit logic before/after expiry
+- Centralized benefit clamping using `MAX_BENEFIT` and `MIN_BENEFIT` constants
+- All 21 existing tests pass after refactor
+
+### 3. Dafalgan
+- Added tests for Dafalgan covering all cases and edge cases
+- Implemented the rule: degrades benefit twice as fast as normal drugs (-2/day before expiry, -4/day after)
+- Required only one new `case` in `computeBenefit` thanks to the refactor
+- Dafalgan was intentionally not added to `index.js` to keep `output.json` identical as required by the assignment
